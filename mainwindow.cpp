@@ -234,8 +234,17 @@ void MainWindow::deleteItemBtnClicked()
         return;
     }
 
+    if(selectedIndex==-1)
+        return;
+
+    QFile f(workingDir+selectedItem->name+QString(ITEM_EXTENSION));
+    f.remove();
     items->erase(items->begin()+selectedIndex);
-    ui->itemList->removeItemWidget(ui->itemList->selectedItems().at(0));
+    ui->itemList->takeItem(ui->itemList->row(ui->itemList->selectedItems().at(0)));
+    ui->itemList->repaint();
+    // Make sure no item is selected
+    QList <QListWidgetItem*> itemsNowSelected=ui->itemList->selectedItems();
+    for_each(itemsNowSelected.begin(),itemsNowSelected.end(),[](QListWidgetItem *item){item->setSelected(false);});
     unselectItem();
 }
 
